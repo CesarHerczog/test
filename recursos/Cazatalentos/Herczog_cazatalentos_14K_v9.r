@@ -6,6 +6,7 @@
 rm( list=ls() )
 gc()
 
+
 require("data.table")
 
 ftirar  <- function( prob, qty )
@@ -61,6 +62,10 @@ tasa_de_aciertos  <- 0
 MAX_GLOBAL_tiros_total  <- 0
 
 
+exito <- function()
+
+
+
 
   for( minimo in c(10) ){
     for( maximo in c(10) ){
@@ -88,7 +93,7 @@ MAX_GLOBAL_tiros_total  <- 0
                         planilla_cazatalentos  <- data.table( "id" = 1:100 ) #Creación de la planilla del cazatalentos
                         idjuegan <- 1:100   #los jugadores que participan la primera ronda
                         
-                        for( rondas in 1:11 ){
+                        for( rondas in 1:11){
                          
                           rondas_pasadas <- n-1
                           
