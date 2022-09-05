@@ -26,12 +26,12 @@ require("DiceKriging")
 require("mlrMBO")
 
 #aqui deben ir SUS semillas, se usan para  1-Repeated  (5-Fold Cross Validation)
-ksemilla_azar  <- c(102191)
+ksemilla_azar  <- c(113111)
 
 
 #Defino la  Optimizacion Bayesiana
 
-kBO_iter  <- 100   #cantidad de iteraciones de la Optimizacion Bayesiana
+kBO_iter  <- 1000   #cantidad de iteraciones de la Optimizacion Bayesiana
 
 hs  <- makeParamSet(
           makeNumericParam("cp"       , lower=  -1.0, upper=    0.1),
@@ -132,7 +132,7 @@ ArbolesCrossValidation  <- function( semilla, data, param, qfolds, pagrupa )
                           seq(qfolds), # 1 2 3 4 5
                           MoreArgs= list( data, param), 
                           SIMPLIFY= FALSE,
-                          mc.cores= 5 )   #debe ir 1 si es Windows
+                          mc.cores= 1 )   #debe ir 1 si es Windows
 
   data[ , fold := NULL ]
 
@@ -157,7 +157,7 @@ EstimarGanancia  <- function( x )
                            ksemilla_azar,
                            MoreArgs= list ( dtrain, param=x, qfolds= xval_folds, pagrupa= "clase_ternaria" ),
                            SIMPLIFY= FALSE,
-                           mc.cores = 5 )  #debe ir 1 si es Windows
+                           mc.cores = 1 )  #debe ir 1 si es Windows
 
 
    ganancia_promedio  <- mean( unlist( vganancias ) )
@@ -173,7 +173,8 @@ EstimarGanancia  <- function( x )
 #------------------------------------------------------------------------------
 #Aqui empieza el programa
 
-setwd( "~/buckets/b1/" )
+#setwd( "~/buckets/b1/" )
+setwd("C:\\gdrive\\UBA2022\\")
 
 #cargo el dataset, aqui debe poner  SU RUTA
 dataset  <- fread("./datasets/competencia1_2022.csv")   #donde entreno
@@ -183,17 +184,18 @@ dataset[ foto_mes==202101, clase_binaria :=  ifelse( clase_ternaria=="CONTINUA",
 
 #defino los datos donde entreno
 dtrain  <- dataset[ foto_mes==202101, ]
+dataset[ , status :=  Master_status*Visa_status ]
 
 
 #creo la carpeta donde va el experimento
 # HT  representa  Hiperparameter Tuning
 dir.create( "./exp/",  showWarnings = FALSE ) 
-dir.create( "./exp/HT4110/", showWarnings = FALSE )
-setwd("./exp/HT4110/")   #Establezco el Working Directory DEL EXPERIMENTO
+dir.create( "./exp/HT113111/", showWarnings = FALSE )
+setwd("./exp/HT113111/")   #Establezco el Working Directory DEL EXPERIMENTO
 
 #defino los archivos donde guardo los resultados de la Bayesian Optimization
-archivo_log  <- "HT4110.txt"
-archivo_BO   <- "HT4110.RDATA"
+archivo_log  <- "HT113111c.txt"
+archivo_BO   <- "HT113111c.RDATA"
 
 #leo si ya existe el log, para retomar en caso que se se corte el programa
 GLOBAL_iteracion  <- 0
