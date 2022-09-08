@@ -61,13 +61,13 @@ tasa_de_aciertos  <- 0
 MAX_GLOBAL_tiros_total  <- 0
 
 
-for( tiros_r1 in c(50) ){#50
-  for( tiros_r2 in c(14) ){
-    for( tiros_r3 in c(14) ){
-      for( tiros_r4 in c(14) ){
-        for( tiros_r5 in c(14) ){
-          for( tiros_r6 in c(14) ){
-            for( tiros_r7 in c(14) ){
+for( tiros_r1 in c(15) ){#50
+  for( tiros_r2 in c(15) ){
+    for( tiros_r3 in c(15) ){
+      for( tiros_r4 in c(15) ){
+        for( tiros_r5 in c(15) ){
+          for( tiros_r6 in c(15) ){
+            for( tiros_r7 in c(14) ){#
               for( tiros_r8 in c(14) ){
                 for( tiros_r9 in c(14) ){
                   for( tiros_r10 in c(14) ){
@@ -122,20 +122,8 @@ for( tiros_r1 in c(50) ){#50
                                                         margenes11 <- 53
                                                         margenes12 <- 60
                                                         margenes13 <- 63
-                                                        poda2<- poda2    #Percentil de eliminación para la ronda
-                                                        poda3<- poda3    #Percentil de eliminación para la ronda
-                                                        poda4<- poda4    #Percentil de eliminación para la ronda
-                                                        poda5<- poda5    #Percentil de eliminación para la ronda
-                                                        poda6<- poda6    #Percentil de eliminación para la ronda
-                                                        poda7<- poda7    #Percentil de eliminación para la ronda
-                                                        poda8<- poda8    #Percentil de eliminación para la ronda
-                                                        poda9<- poda9    #Percentil de eliminación para la ronda
-                                                        poda10<- poda10    #Percentil de eliminación para la ronda
-                                                        poda11<- poda11    #Percentil de eliminación para la ronda
-                                                        poda12<- poda12    #Percentil de eliminación para la ronda
-                                                        poda13<- poda13    #Percentil de eliminación para la ronda
                                                         poda_mediana_magica1 <- poda_mediana_magica1  #Valor de 0 a 1 en que se selecciona el limite de la mediana de tasa de aciertos
-                                                                                #que pasa a la última ronda
+                                                                                                  
                                                         poda_mediana_magica2 <- poda_mediana_magica2  #Valor de 0 a 1 en que se selecciona el limite de la mediana de tasa de aciertos
                                                         #que pasa a la última ronda
                                                         planilla_cazatalentos  <- data.table( "id" = 1:100 )
@@ -319,7 +307,7 @@ for( tiros_r1 in c(50) ){#50
                                                         #El cazatalentos toma una decision, elige al que mas aciertos tuvo en la ronda2
                                                         
                                                         #pos_mejor <-  planilla_cazatalentos[ , which.max(aciertos13*suma_de_margenes) ]
-                                                        pos_mejor <-  planilla_cazatalentos[ , which.max(suma_de_margenes13*aciertos13) ]
+                                                        pos_mejor <-  planilla_cazatalentos[ , which.max(suma_de_margenes13*acumulado13^2.5) ]
                                                         id_mejor  <-  planilla_cazatalentos[ pos_mejor, id ]
                                                         #Finalmente, la hora de la verdadero_mejor
                                                         #Termino el juego
