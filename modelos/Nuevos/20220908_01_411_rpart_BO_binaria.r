@@ -34,8 +34,8 @@ ksemilla_azar  <- c(113111)
 kBO_iter  <- 500   #cantidad de iteraciones de la Optimizacion Bayesiana
 
 hs  <- makeParamSet(
-          makeNumericParam("cp"       , lower=  -0.9, upper=    -0.5),
-          makeNumericParam("minsplit" , lower=   800,   upper= 2000 ),
+          makeNumericParam("cp"       , lower=  -1.0, upper=    -0.5),
+          makeNumericParam("minsplit" , lower=   800,   upper= 1500 ),
           makeNumericParam("minbucket", lower=   200,   upper= 400 ),
           makeIntegerParam("maxdepth" , lower=   5L,  upper=   9L),  #la letra L al final significa ENTERO
           forbidden = quote( minbucket > 0.5*minsplit ) )             # minbuket NO PUEDE ser mayor que la mitad de minsplit
@@ -86,8 +86,8 @@ particionar  <- function( data, division, agrupa="", campo="fold", start=1, seed
 ArbolSimple  <- function( fold_test, data, param )
 {
   param2 <- param
-  #param2$minsplit   <- as.integer( round( 2^param$minsplit ) )
-  #param2$minbucket  <- as.integer( round( 2^param$minbucket ) )
+  param2$minsplit   <- as.integer( round( 2^param$minsplit ) )
+  param2$minbucket  <- as.integer( round( 2^param$minbucket ) )
   
   #genero el modelo
   modelo  <- rpart("clase_binaria ~ .  -Visa_mpagado -mcomisiones_mantenimiento -clase_ternaria",
@@ -132,7 +132,7 @@ ArbolesCrossValidation  <- function( semilla, data, param, qfolds, pagrupa )
                           seq(qfolds), # 1 2 3 4 5
                           MoreArgs= list( data, param), 
                           SIMPLIFY= FALSE,
-                          mc.cores= 1 )   #debe ir 1 si es Windows mc.cores= 5 ) 
+                          mc.cores= 1 )   #debe ir 1 si es Windows
 
   data[ , fold := NULL ]
 
@@ -174,18 +174,19 @@ EstimarGanancia  <- function( x )
 #Aqui empieza el programa
 
 #setwd( "~/buckets/b1/" )
-setwd("C:\\gdrive\\UBA2022\\")
+setwd("C:\\gdrive\\UBA2022\\")  #Establezco el Working Directory
 
 #cargo el dataset, aqui debe poner  SU RUTA
 dataset  <- fread("./datasets/competencia1_2022.csv")   #donde entreno
 
-#creo la clase_binaria  SI= {BAJA+1, BAJA+2}  NO={CONTINUA}
-dataset[ foto_mes==202101, clase_binaria :=  ifelse( clase_ternaria=="CONTINUA", "NO", "SI" ) ]
 dataset[ ,principal_1 := as.integer( ctrx_quarter >= 49 & mpayroll >= 7043 & (ccaja_ahorro < 4 | is.na(ccaja_ahorro) ) & mpayroll < 1000000 & ( mcheques_depositados < 45000 | is.na(mcheques_depositados) ) & ( Visa_fechaalta < 8986 | is.na(Visa_fechaalta) ) & ( mtarjeta_master_consumo < 77000 | is.na(mtarjeta_master_consumo) )) ]
 dataset[ ,principal_3 := as.integer( ctrx_quarter >= 49 & (mpayroll < 7043 | is.na(mpayroll) ) & mtarjeta_visa_consumo >= 2130 & (mpasivos_margen < 699 | is.na(mpasivos_margen) ) & Visa_msaldototal >= 5997 & mrentabilidad_annual >= 11000 & ( Visa_msaldodolares < 3026 | is.na(Visa_msaldodolares) ))]
 dataset[ ,principal_2 := as.integer( ctrx_quarter >= 49 & (mpayroll < 7043 | is.na(mpayroll) ) & mtarjeta_visa_consumo >= 2130 & mpasivos_margen >= 699 & mcaja_ahorro >= 325 & ( cliente_edad < 78 | is.na(cliente_edad) ) & ( ccallcenter_transacciones < 10 | is.na(ccallcenter_transacciones) )) ]
 dataset[ ,principal_4 := as.integer( ctrx_quarter >= 49 & (mpayroll < 7043 | is.na(mpayroll) ) & mtarjeta_visa_consumo >= 2130 & (mpasivos_margen < 699 | is.na(mpasivos_margen) ) & Visa_msaldototal >= 5997 & ( mrentabilidad_annual < 11000 | is.na(mrentabilidad_annual) ) & ( ctrx_quarter < 148 | is.na(ctrx_quarter) ))]
 
+
+#creo la clase_binaria  SI= {BAJA+1, BAJA+2}  NO={CONTINUA}
+dataset[ foto_mes==202101, clase_binaria :=  ifelse( clase_ternaria=="CONTINUA", "NO", "SI" ) ]
 
 #defino los datos donde entreno
 dtrain  <- dataset[ foto_mes==202101, ]
@@ -198,8 +199,8 @@ dir.create( "./exp/HT113111/", showWarnings = FALSE )
 setwd("./exp/HT113111/")   #Establezco el Working Directory DEL EXPERIMENTO
 
 #defino los archivos donde guardo los resultados de la Bayesian Optimization
-archivo_log  <- "HT20220909_01.txt"
-archivo_BO   <- "HT20220909_01.RDATA"
+archivo_log  <- "HT113111_20220908.txt"
+archivo_BO   <- "HT113111_20220908.RDATA"
 
 #leo si ya existe el log, para retomar en caso que se se corte el programa
 GLOBAL_iteracion  <- 0

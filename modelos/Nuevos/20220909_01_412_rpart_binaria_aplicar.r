@@ -4,19 +4,13 @@
 #2 Pruebo Fiscal Bolaños (Mismo resultado, lo dejo)
 #3 Pruebo 200 menos y mejora (Falta sintonía fina)
 #20220908_x2_KA113111_8800
+#4Pruebo creando ctrx_quarter (NO FUNCIONÓ)
   
 ##2 Probar la contrucción de algunas features:
-#dataset[ , campo1 := as.integer( ctrx_quarter <14 & mcuentas_saldo < -1256.1 & cprestamos_personales <2 ) ]
-#dataset[ , campo2 := as.integer( ctrx_quarter <14 & mcuentas_saldo < -1256.1 & cprestamos_personales>=2 ) ]
-#
-#dataset[ , campo3 := as.integer( ctrx_quarter <14 & mcuentas_saldo>= -1256.1 & mcaja_ahorro <2601.1 ) ]
-#dataset[ , campo4 := as.integer( ctrx_quarter <14 & mcuentas_saldo>= -1256.1 & mcaja_ahorro>=2601.1 ) ]
-#
-#dataset[ , campo5 := as.integer( ctrx_quarter>=14 & ( Visa_status>=8 | is.na(Visa_status) ) & ( Master_status>=8 | is.na(Master_status) ) ) ]
-#dataset[ , campo6 := as.integer( ctrx_quarter>=14 & ( Visa_status>=8 | is.na(Visa_status) ) & ( Master_status <8 & !is.na(Master_status) ) ) ]
-#
-#dataset[ , campo7 := as.integer( ctrx_quarter>=14 & Visa_status <8 & !is.na(Visa_status) & ctrx_quarter <38 ) ]
-#dataset[ , campo8 := as.integer( ctrx_quarter>=14 & Visa_status <8 & !is.na(Visa_status) & ctrx_quarter>=38 ) ]
+#Principal_1[ , campo1 := as.integer( ctrx_quarter >= 49 & mpayroll >= 7043 & (ccaja_ahorro < 4 | is.na(ccaja_ahorro) ) & mpayroll < 1000000 & ( mcheques_depositados < 45000 | is.na(mcheques_depositados) ) & ( Visa_fechaalta < 8986 | is.na(Visa_fechaalta) ) & ( mtarjeta_master_consumo < 77000 | is.na(mtarjeta_master_consumo) ) ]
+#Principal_2[ , campo1 := as.integer( ctrx_quarter >= 49 & (mpayroll < 7043 | is.na(mpayroll) ) & mtarjeta_visa_consumo >= 2130 & mpasivos_margen >= 699 & mcaja_ahorro >= 325 & ( cliente_edad < 78 | is.na(cliente_edad) ) & ( ccallcenter_transacciones < 10 | is.na(ccallcenter_transacciones) ) ]
+#Principal_3[ , campo1 := as.integer( ctrx_quarter >= 49 & (mpayroll < 7043 | is.na(mpayroll) ) & mtarjeta_visa_consumo >= 2130 & (mpasivos_margen < 699 | is.na(mpasivos_margen) ) & Visa_msaldototal >= 5997 & mrentabilidad_annual >= 11000 & ( Visa_msaldodolares < 3026 | is.na(Visa_msaldodolares) )]
+#Principal_4[ , campo1 := as.integer( ctrx_quarter >= 49 & (mpayroll < 7043 | is.na(mpayroll) ) & mtarjeta_visa_consumo >= 2130 & (mpasivos_margen < 699 | is.na(mpasivos_margen) ) & Visa_msaldototal >= 5997 & ( mrentabilidad_annual < 11000 | is.na(mrentabilidad_annual) ) & ( ctrx_quarter < 148 | is.na(ctrx_quarter) )]
 
 
 #Aplicacion de los mejores hiperparametros encontrados en una bayesiana
@@ -41,7 +35,15 @@ dataset[ foto_mes==202101,
          clase_binaria :=  ifelse( clase_ternaria=="CONTINUA", "NO", "SI" ) ]
 
 #Transformo las primeras ramas del árbol en categorías binarias
-#dataset[ ,ctrx_quarter_bin :=  ifelse( ctrx_quarter < 14, 0, 1 ) ] 
+
+#Nuevas Features
+#dataset[ ,principal_1 := as.integer( ctrx_quarter >= 49 & mpayroll >= 7043 & (ccaja_ahorro < 4 | is.na(ccaja_ahorro) ) & mpayroll < 1000000 & ( mcheques_depositados < 45000 | is.na(mcheques_depositados) ) & ( Visa_fechaalta < 8986 | is.na(Visa_fechaalta) ) & ( mtarjeta_master_consumo < 77000 | is.na(mtarjeta_master_consumo) )) ]
+#dataset[ ,principal_3 := as.integer( ctrx_quarter >= 49 & (mpayroll < 7043 | is.na(mpayroll) ) & mtarjeta_visa_consumo >= 2130 & (mpasivos_margen < 699 | is.na(mpasivos_margen) ) & Visa_msaldototal >= 5997 & mrentabilidad_annual >= 11000 & ( Visa_msaldodolares < 3026 | is.na(Visa_msaldodolares) ))]
+#dataset[ ,principal_2 := as.integer( ctrx_quarter >= 49 & (mpayroll < 7043 | is.na(mpayroll) ) & mtarjeta_visa_consumo >= 2130 & mpasivos_margen >= 699 & mcaja_ahorro >= 325 & ( cliente_edad < 78 | is.na(cliente_edad) ) & ( ccallcenter_transacciones < 10 | is.na(ccallcenter_transacciones) )) ]
+#dataset[ ,principal_4 := as.integer( ctrx_quarter >= 49 & (mpayroll < 7043 | is.na(mpayroll) ) & mtarjeta_visa_consumo >= 2130 & (mpasivos_margen < 699 | is.na(mpasivos_margen) ) & Visa_msaldototal >= 5997 & ( mrentabilidad_annual < 11000 | is.na(mrentabilidad_annual) ) & ( ctrx_quarter < 148 | is.na(ctrx_quarter) ))]
+
+
+#dataset[ ,ctrx_quarter_bin :=  ifelse( ctrx_quarter >= 49, 1, 0 ) ] 
 #dataset[ ,Visa_status_bin :=  ifelse( Visa_status < 8, 0, 1 ) ]
 #dataset[ ,Master_status_bin :=  ifelse( Master_status < 8, 0, 1 ) ]
 #dataset[ ,mcaja_ahorro_bin :=  ifelse( mcaja_ahorro < 260, 0, 1 ) ]
@@ -54,13 +56,13 @@ dapply  <- dataset[ foto_mes==202103, ]  #defino donde voy a aplicar el modelo
 # obviamente rpart no puede ver  clase_ternaria para predecir  clase_binaria
 #  #no utilizo Visa_mpagado ni  mcomisiones_mantenimiento por drifting
 
-modelo  <- rpart(formula=   "clase_binaria ~ .  -clase_ternaria", #-ctrx_quarter
+modelo  <- rpart(formula=   "clase_binaria ~ .  -clase_ternaria ", #-ctrx_quarter
                  data=      dtrain,  #los datos donde voy a entrenar
                  xval=         0,
-                 cp=       -0.54,   #-0.89
-                 minsplit=  1073,   # 621
-                 minbucket=  278,   # 309
-                 maxdepth=     9 )  #  12
+                 cp=       -0.59,   #-0.89 -0.54
+                 minsplit=  1187,   # 621  1073
+                 minbucket=  273,   # 309   278
+                 maxdepth=     9 )  #  12     9
 
 #grafico el arbol
 prp(modelo, extra=101, digits=5, branch=1, type=4, varlen=0, faclen=0)
@@ -120,7 +122,7 @@ dir.create( "./exp/" )
 dir.create( "./exp/KA113111" )
 
 
-for( corte  in  c( 8800, 9000, 9200, 10000, 10500, 11000 ) )
+for( corte  in  c( 8800, 9000, 9600 ) )
 {
   #le envio a los  corte  mejores,  de mayor probabilidad de prob_SI
   dfinal[ , Predicted := 0L ]
@@ -128,7 +130,7 @@ for( corte  in  c( 8800, 9000, 9200, 10000, 10500, 11000 ) )
 
 
   fwrite( dfinal[ , list(numero_de_cliente, Predicted) ], #solo los campos para Kaggle
-           file= paste0( "./exp/KA113111/20220908_x3",  corte, ".csv"),
+           file= paste0( "./exp/KA113111/20220909_HT8_",  corte, ".csv"),
            sep=  "," )
 }
 
