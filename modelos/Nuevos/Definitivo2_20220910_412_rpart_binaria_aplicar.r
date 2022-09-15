@@ -85,6 +85,7 @@ dapply[ ,mcaja_ahorro := mcaja_ahorro * 0.99517 ]
 
 #No se utilizaron parámetros de OB, ya que arrojaban igual o menor ganancia en el Leaderboard Publico
 #(https://github.com/CesarHerczog/KA113111/blob/main/HT20220909_03.txt)
+# Papeles de trabajo (https://github.com/CesarHerczog/test/blob/main/modelos/papeles%20de%20trabajo.xlsx)
 #Por lo tanto se mantuvieron los valores trabajados en la clase de 01/09
 
 modelo  <- rpart(formula=   "clase_binaria ~ .  -clase_ternaria ", #-ctrx_quarter
