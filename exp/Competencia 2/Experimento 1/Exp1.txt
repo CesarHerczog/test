@@ -1,0 +1,4 @@
+-Correr OB con ajustes de en el stoploss
+-Adaptar los resultados de la OB a los hallazgos de la competencia 1
+	-Principalmente el corrimiento de datadrifting porst
+	-Segundo, ver de rankear algunas features
